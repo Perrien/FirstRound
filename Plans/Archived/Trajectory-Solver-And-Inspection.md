@@ -1,6 +1,6 @@
 # Trajectory solver and inspection screen
 
-Status: **ACTIVE — checkpoint 2 complete; checkpoint 3 pending** · 2026-09-24
+Status: **COMPLETE — all three checkpoints complete** · 2026-09-24
 
 Goal: Complete ladder outcome 2 with a Swift solver that calculates new trajectories from editable inputs, and a Mac screen where the owner can inspect the resulting table. Fixed reference JSON is test data only. The app must still build and run without the `LongRange` checkout. Verification for this milestone is **macOS only**; do not spend time on iPhone UI checks or simulators.
 
@@ -71,7 +71,7 @@ For display, label physical displacement separately from correction. Given `drop
 
 **Commit point:** show the Mac screen and results, then stop for owner review/commit before checkpoint 3. Suggested message: `Add editable trajectory inspection screen`.
 
-### 3. Generated wind and present web-shot reference cases — pending
+### 3. Generated wind and present web-shot reference cases — complete
 
 Port the old seedable random, simplex-noise, and `WindGenerator` field behavior needed for one named field preset, starting with `Moderate`. A field is a zero-mean gust contribution; a selected **mean** wind is a separate vector added to samples for the actual flight. Do not treat a preset name as a fixed wind direction. The field clock and seed must be explicit, with an instance-owned generator so repeated runs with the same inputs produce the same rows. Provide the solver an injected `wind(position, time)` function and keep constant wind as the simple path. Recreate the old sample ordering, RMS initialization, advection, and component parameters when forming parity cases; record any C++ random-distribution difference rather than hiding it by changing expected values.
 
@@ -82,6 +82,10 @@ Use `WindReferenceTests.swift` to prove deterministic repeatability, wind sample
 **Check:** Mac tests pass twice in a row in different orders without changing wind outputs. On screen, the same seed/clock yields the same table; changing clock or mean wind changes it. The old 36-case matrix still passes. If matching the legacy seeded field requires platform-specific random behavior that cannot be reproduced reliably in Swift, stop with the captured mismatch and options; do not substitute arbitrary Swift randomness or claim parity.
 
 **Commit point:** show the separate reference-case comparisons and working Mac field input, then stop. Suggested message: `Validate seeded wind and web shot behavior`.
+
+**Progress note (2026-09-24):** Ported the MT19937 state sequence, Emscripten 6.0.9 libc++ `std::shuffle` ordering and bounded draws, 3D simplex noise, and the legacy `Moderate` field components, RMS initialization, and advection. The solver accepts an injected position/time wind sampler; the Mac screen exposes constant wind or a seeded Moderate gust field with editable seed and field clock, while mean wind stays a separate vector. Added the pinned generated-wind and calm-zero/live-wind web-shot fixtures and `WindReferenceTests.swift`; all four captured gust samples and all generated-field shot rows match, along with the web-shot reference. The legacy matrix remains unchanged and passes. Mac UI checks confirmed repeat calculations at seed 1337 / clock 30 return the same table; changing the clock or mean wind changes the table. Xcode tests passed twice serially and once with parallel testing; the Mac build passed.
+
+**Material alteration:** Added `Reference/generate-wind-references.mjs` as a small offline-only fixture generator so `Reference/README.md` can give exact reproducible commands. It reads the pinned LongRange build only when regenerating fixtures; app and test runtime have no LongRange dependency. The generated-field reference harness uses the engine's public `timeStep` path to add mean wind to each gust sample, since the current web bridge's generated-field helper exposes gusts alone.
 
 ## Verification and completion
 

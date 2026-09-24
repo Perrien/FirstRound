@@ -7,7 +7,7 @@ This is the ordered list of outcomes for the native app. It is not an execution 
 | # | Outcome | State |
 |---|---|---|
 | 1 | Native math, fixture reader, and editable unit conversion preview | complete |
-| 2 | Working trajectory solver and inspection screen | planned |
+| 2 | Working trajectory solver and inspection screen | complete |
 | 3 | Dispersion and steel physics | later |
 | 4 | First playable shot loop | later |
 | 5 | Motion aiming on iOS | later |
@@ -18,7 +18,7 @@ This is the ordered list of outcomes for the native app. It is not an execution 
 ## What each outcome means
 
 1. The Xcode project gains a unit-test target. Fixed vectors load only in tests. Swift vector, quaternion, and conversion helpers work. An editable screen shows box measurements converted to SI without claiming to calculate a trajectory.
-2. Port atmosphere, G1/G7 drag, zeroing, trajectory integration, spin drift, and wind into Swift. The solver screen calculates fresh rows at intervals or specified ranges from editable inputs, with metric/imperial and MIL/MOA output. Offer player-facing defaults from all ten game cartridges. Add seeded random and simplex noise before validating generated wind; add separate reference cases for generated wind and the web shot sequence.
+2. Port atmosphere, G1/G7 drag, zeroing, trajectory integration, spin drift, and wind into Swift. The Mac solver screen calculates fresh rows at intervals or specified ranges from editable inputs, with metric/imperial and MIL/MOA output. Offer editable starting values for all ten game cartridges. Constant mean wind and the seeded Moderate gust field are supported, with separate references for generated wind and the calm-zero/live-wind web shot sequence. iPhone verification remains for a later milestone.
 3. Port dispersion and steel-target reaction physics, with fixed comparison cases and edge tests.
 4. Build one rifle/load and one target in RealityKit. Dial or hold, aim by touch on iOS or pointer on Mac, fire, and see hit or miss.
 5. Add optional CoreMotion aiming with recenter and sensitivity controls; retain touch and pointer aiming.

@@ -1,0 +1,55 @@
+{
+  "sourceRevision": "a96c8f67ed2f395d111b1da5613f151823f7742c",
+  "generator": "Reference/generate-wind-references.mjs; solve sequence mirrors GameBuild/app/src/engine-bridge/index.ts",
+  "load": {
+    "massKg": 0.0090718474,
+    "diameterM": 0.0067056,
+    "lengthM": 0.0353568,
+    "bc": 0.326,
+    "dragModel": "G7",
+    "muzzleVelocityMps": 826.008,
+    "twistM": 0.2032
+  },
+  "atmosphere": {
+    "temperatureK": 288.15,
+    "altitudeM": 0,
+    "humidity": 0.5,
+    "pressurePa": 0
+  },
+  "zeroMode": "calmAir",
+  "zeroRangeM": 100,
+  "sightHeightM": 0,
+  "liveWindMps": {
+    "x": 4.4704,
+    "y": 0,
+    "z": 0
+  },
+  "sampleRangesM": [
+    100,
+    300,
+    600
+  ],
+  "rows": [
+    {
+      "rangeM": 100,
+      "dropM": -0.010327004827558994,
+      "windageM": 0.015955442562699318,
+      "velocityMps": 779.3926391601562,
+      "timeOfFlightS": 0.12463341653347015
+    },
+    {
+      "rangeM": 300,
+      "dropM": -0.5364874601364136,
+      "windageM": 0.16199016571044922,
+      "velocityMps": 690.6327514648438,
+      "timeOfFlightS": 0.39725780487060547
+    },
+    {
+      "rangeM": 600,
+      "dropM": -2.949462413787842,
+      "windageM": 0.7187165021896362,
+      "velocityMps": 568.9190673828125,
+      "timeOfFlightS": 0.875935971736908
+    }
+  ]
+}

@@ -4,11 +4,13 @@ struct TrajectorySolver {
     private static let retardationK: Float = 4795.4
     private let request: BallisticRequest
     private let atmosphere: Atmosphere
+    private let windSampler: ((Vector3D, Float) -> Vector3D)?
 
-    init(request: BallisticRequest) throws {
+    init(request: BallisticRequest, windSampler: ((Vector3D, Float) -> Vector3D)? = nil) throws {
         try Self.validate(request)
         self.request = request
         self.atmosphere = Atmosphere(request.atmosphere)
+        self.windSampler = windSampler
         guard atmosphere.pressurePa.isFinite, atmosphere.pressurePa > 0,
               atmosphere.densityKgPerM3.isFinite, atmosphere.densityKgPerM3 > 0,
               atmosphere.speedOfSoundMps.isFinite, atmosphere.speedOfSoundMps > 0 else {
@@ -19,7 +21,7 @@ struct TrajectorySolver {
     func solve() throws -> TrajectorySolution {
         let zeroWind = request.zeroMode == .legacyWindAware ? request.wind.vector : Vector3D()
         let zero = try findZero(wind: zeroWind)
-        let liveTrajectory = try simulate(initial: zero.initialState, wind: request.wind.vector,
+        let liveTrajectory = try simulate(initial: zero.initialState, meanWind: request.wind.vector,
                                           maxDistanceM: request.ranges.maxRangeM * 1.05)
 
         var sampleRanges: [Float] = []
@@ -80,8 +82,9 @@ struct TrajectorySolver {
 
         for _ in 0..<request.maxZeroIterations {
             let candidate = makeInitialState(pitch: pitch, yaw: yaw)
-            let trajectory = try simulate(initial: candidate, wind: wind,
-                                          maxDistanceM: request.ranges.zeroRangeM * 1.1)
+            let trajectory = try simulate(initial: candidate, meanWind: wind,
+                                          maxDistanceM: request.ranges.zeroRangeM * 1.1,
+                                          applyField: false)
             guard let point = trajectory.atDistance(request.ranges.zeroRangeM) else {
                 throw SolverError.zeroRangeUnreachable(request.ranges.zeroRangeM)
             }
@@ -140,7 +143,8 @@ struct TrajectorySolver {
                            spinRate: request.load.spinRateRadPerSecond)
     }
 
-    private func simulate(initial: BulletState, wind: Vector3D, maxDistanceM: Float) throws -> Trajectory {
+    private func simulate(initial: BulletState, meanWind: Vector3D, maxDistanceM: Float,
+                          applyField: Bool = true) throws -> Trajectory {
         var state = initial
         // Match the legacy core: recover twist from this launch state's speed
         // and signed spin rate before applying the corrected Miller formula.
@@ -152,9 +156,13 @@ struct TrajectorySolver {
         var time: Float = 0
         var previousCrosswind: Float = 0
         var trajectory = Trajectory()
+        var wind = sampledWind(mean: meanWind, position: state.position, time: time, applyField: applyField)
         trajectory.append(TrajectoryPoint(timeS: time, state: state, wind: wind))
 
         while time < request.maxTimeS {
+            // The legacy field solver samples once at the start of each RK2
+            // step and holds that local value through its midpoint evaluation.
+            wind = sampledWind(mean: meanWind, position: state.position, time: time, applyField: applyField)
             // The first step includes the 0 -> muzzle wind jump.
             let right = horizontalRight(state.velocity)
             let crosswind = wind.dot(right)
@@ -186,6 +194,10 @@ struct TrajectorySolver {
             if -state.position.z > maxDistanceM { break }
         }
         return trajectory
+    }
+
+    private func sampledWind(mean: Vector3D, position: Vector3D, time: Float, applyField: Bool) -> Vector3D {
+        mean + (applyField ? (windSampler?(position, time) ?? Vector3D()) : Vector3D())
     }
 
     private func acceleration(state: BulletState, wind: Vector3D, stability: Float, atTime time: Float) -> Vector3D {

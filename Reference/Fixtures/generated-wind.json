@@ -1,0 +1,146 @@
+{
+  "sourceRevision": "a96c8f67ed2f395d111b1da5613f151823f7742c",
+  "generator": "Reference/generate-wind-references.mjs; Emscripten 6.0.9 owned-engine WebAssembly artifact",
+  "seed": 1337,
+  "preset": "Moderate",
+  "fieldClockS": 30,
+  "fieldBoundsM": {
+    "min": {
+      "x": -30,
+      "y": 0,
+      "z": -1000
+    },
+    "max": {
+      "x": 30,
+      "y": 50,
+      "z": 0
+    }
+  },
+  "meanWindMps": {
+    "x": 1.5,
+    "y": 0,
+    "z": -0.25
+  },
+  "samples": [
+    {
+      "position": {
+        "x": 0,
+        "y": 1.6,
+        "z": 0
+      },
+      "timeS": 30,
+      "gustMps": {
+        "x": 0.6963227987289429,
+        "y": 0,
+        "z": 0.8291144371032715
+      },
+      "totalWindMps": {
+        "x": 2.196322798728943,
+        "y": 0,
+        "z": 0.5791144371032715
+      }
+    },
+    {
+      "position": {
+        "x": 0,
+        "y": 1.6,
+        "z": -100
+      },
+      "timeS": 30,
+      "gustMps": {
+        "x": 0.4257255494594574,
+        "y": 0,
+        "z": 0.6395117044448853
+      },
+      "totalWindMps": {
+        "x": 1.9257255494594574,
+        "y": 0,
+        "z": 0.38951170444488525
+      }
+    },
+    {
+      "position": {
+        "x": 5,
+        "y": 2,
+        "z": -300
+      },
+      "timeS": 30,
+      "gustMps": {
+        "x": 0.7965448498725891,
+        "y": 0,
+        "z": 0.9672583341598511
+      },
+      "totalWindMps": {
+        "x": 2.296544849872589,
+        "y": 0,
+        "z": 0.7172583341598511
+      }
+    },
+    {
+      "position": {
+        "x": -12,
+        "y": 10,
+        "z": -750
+      },
+      "timeS": 30,
+      "gustMps": {
+        "x": 1.7601145505905151,
+        "y": 0,
+        "z": 0.3602220416069031
+      },
+      "totalWindMps": {
+        "x": 3.260114550590515,
+        "y": 0,
+        "z": 0.11022204160690308
+      }
+    }
+  ],
+  "trajectory": {
+    "load": {
+      "massKg": 0.0090718474,
+      "diameterM": 0.0067056,
+      "lengthM": 0.0353568,
+      "bc": 0.326,
+      "dragModel": "G7",
+      "muzzleVelocityMps": 826.008,
+      "twistM": 0.2032
+    },
+    "atmosphere": {
+      "temperatureK": 288.15,
+      "altitudeM": 0,
+      "humidity": 0.5,
+      "pressurePa": 0
+    },
+    "zeroRangeM": 100,
+    "stepS": 0.001,
+    "meanWindMps": {
+      "x": 1.5,
+      "y": 0,
+      "z": -0.25
+    },
+    "rows": [
+      {
+        "rangeM": 100,
+        "dropM": -0.005686300341039896,
+        "windageM": 0.009172826074063778,
+        "velocityMps": 779.3570556640625,
+        "timeOfFlightS": 0.12463697791099548
+      },
+      {
+        "rangeM": 300,
+        "dropM": -0.5207728743553162,
+        "windageM": 0.08650189638137817,
+        "velocityMps": 690.4931640625,
+        "timeOfFlightS": 0.3972949683666229
+      },
+      {
+        "rangeM": 600,
+        "dropM": -2.9250571727752686,
+        "windageM": 0.40368711948394775,
+        "velocityMps": 568.7247924804688,
+        "timeOfFlightS": 0.8761095404624939
+      }
+    ]
+  },
+  "randomNote": "The engine uses std::mt19937 and Emscripten 6.0.9 libc++ shuffle/uniform distributions. Swift ports libc++ shuffle ordering, low-bit mask/rejection bounded draws, and float generate_canonical; captured sample tests verify the sequence."
+}

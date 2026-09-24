@@ -19,6 +19,9 @@ struct ContentView: View {
     @State private var scopeHeight = "50.8"
     @State private var windSpeed = "0"
     @State private var windDirection = "0"
+    @State private var windMode = WindInputMode.constant
+    @State private var windSeed = "1337"
+    @State private var windClock = "0"
     @State private var rangeStep = "100"
     @State private var maxRange = "1000"
     @State private var specificRanges = ""
@@ -35,7 +38,8 @@ struct ContentView: View {
     private var calculationSignature: String {
         [selectedDefaultID, bulletWeight, bulletDiameter, bulletLength, ballisticCoefficient,
          muzzleVelocity, twist, dragModel.rawValue, temperature, altitude, humidity,
-         zeroRange, scopeHeight, windSpeed, windDirection, rangeStep, maxRange, specificRanges,
+         zeroRange, scopeHeight, windSpeed, windDirection, windMode.rawValue, windSeed, windClock,
+         rangeStep, maxRange, specificRanges,
          distanceSystem.rawValue].joined(separator: "|")
     }
 
@@ -115,14 +119,7 @@ struct ContentView: View {
                         .font(.caption).foregroundStyle(.secondary)
                 }
 
-                Section("Constant wind") {
-                    LazyVGrid(columns: twoColumns, spacing: 12) {
-                        inputField("Wind speed", text: $windSpeed, unit: distanceSystem.windSpeedLabel, key: "windSpeed", prompt: "0")
-                        inputField("Wind toward", text: $windDirection, unit: "degrees", key: "windDirection", prompt: "0")
-                    }
-                    Text("Direction: 0° pushes right, 90° downrange, 180° left, and 270° up-range.")
-                        .font(.caption).foregroundStyle(.secondary)
-                }
+                windSection
 
                 Section("Sample ranges") {
                     LazyVGrid(columns: twoColumns, spacing: 12) {
@@ -360,13 +357,15 @@ struct ContentView: View {
         let scopeDisplay = parse(scopeHeight, key: "scopeHeight", label: "scope height", allowsZero: true)
         let windDisplay = parse(windSpeed, key: "windSpeed", label: "wind speed", allowsZero: true)
         let direction = parse(windDirection, key: "windDirection", label: "wind direction", allowsZero: true, range: 0...360)
+        let seedDisplay = windMode == .moderate ? parse(windSeed, key: "windSeed", label: "field seed", allowsZero: true, range: 0...Double(UInt32.max)) : 1337
+        let clockDisplay = windMode == .moderate ? parse(windClock, key: "windClock", label: "field clock", allowsZero: true, range: 0...86_400) : 0
         let stepDisplay = parse(rangeStep, key: "rangeStep", label: "range interval")
         let maxDisplay = parse(maxRange, key: "maxRange", label: "maximum range")
 
         guard validationErrors.isEmpty,
               let weight, let diameter, let length, let bc, let mv, let twistValue,
               let tempDisplay, let altitudeDisplay, let humidityPercent,
-              let zeroDisplay, let scopeDisplay, let windDisplay, let direction,
+              let zeroDisplay, let scopeDisplay, let windDisplay, let direction, let seedDisplay, let clockDisplay,
               let stepDisplay, let maxDisplay else { return }
 
         let zeroM = distanceSystem.meters(fromRange: zeroDisplay)
@@ -405,9 +404,41 @@ struct ContentView: View {
             sightHeightM: Float(distanceSystem.scopeHeightMeters(fromDisplay: scopeDisplay)))
 
         do {
-            solution = try TrajectorySolver(request: request).solve()
+            if windMode == .moderate {
+                let field = WindField(seed: UInt32(seedDisplay),
+                                     bounds: .init(minimum: Vector3D(-30, 0, -Float(maxM)),
+                                                    maximum: Vector3D(30, 50, 0)))
+                field.advance(to: Float(clockDisplay))
+                solution = try TrajectorySolver(request: request,
+                                                windSampler: { position, _ in field.sample(position) }).solve()
+            } else {
+                solution = try TrajectorySolver(request: request).solve()
+            }
         } catch {
             calculationError = error.localizedDescription
+        }
+    }
+
+    private var windSection: some View {
+        Section("Wind") {
+            LazyVGrid(columns: twoColumns, spacing: 12) {
+                inputField("Wind speed", text: $windSpeed, unit: distanceSystem.windSpeedLabel, key: "windSpeed", prompt: "0")
+                inputField("Wind toward", text: $windDirection, unit: "degrees", key: "windDirection", prompt: "0")
+            }
+            Text("Direction: 0° pushes right, 90° downrange, 180° left, and 270° up-range.")
+                .font(.caption).foregroundStyle(.secondary)
+            Picker("Wind model", selection: $windMode) {
+                Text(WindInputMode.constant.rawValue).tag(WindInputMode.constant)
+                Text(WindInputMode.moderate.rawValue).tag(WindInputMode.moderate)
+            }
+            .pickerStyle(.segmented)
+            .accessibilityIdentifier("windModePicker")
+            if windMode == .moderate {
+                inputField("Field seed", text: $windSeed, unit: "0–4,294,967,295", key: "windSeed", prompt: "1337")
+                inputField("Field clock", text: $windClock, unit: "seconds", key: "windClock", prompt: "0")
+                Text("Moderate is a seeded, zero-mean gust pattern. Wind speed and direction above remain the mean wind added to it.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
         }
     }
 
