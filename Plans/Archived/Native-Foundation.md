@@ -1,6 +1,6 @@
 # Native foundation and conversion preview
 
-Status: **ACTIVE — item 2 complete; awaiting commit checkpoint** · 2026-09-24
+Status: **COMPLETE — final commit checkpoint** · 2026-09-24
 
 Goal: Make the owner-created First Round project testable and show one honest, interactive native result before trajectory physics arrives. A user enters bullet box measurements and immediately sees their SI equivalents. The original golden-vector files remain test-only.
 
@@ -51,7 +51,7 @@ In `UnitConversions.swift`, put named pure functions for grains→kilograms, inc
 
 **Commit point:** show the test output and changed helpers, then stop before item 3. Suggested message: `Port foundation math and exact unit conversions`.
 
-### 3. Editable conversion preview — not started
+### 3. Editable conversion preview — complete
 
 Replace `ContentView.swift` with a simple SwiftUI form titled **First Round — Measurement Preview**. Provide text fields for bullet weight (grains), diameter (inches), length (inches), muzzle velocity (feet/second), and twist (inches per turn). Start with empty fields and example placeholders; do not read `loads.json` or `golden.json` in app code. Each valid field immediately shows its SI equivalent beside or below it. Blank fields show `—`; nonnumeric, nonfinite, zero, and negative entries show `—` plus a brief field-level hint, without leaving the prior converted value visible. Keep text editing usable on both Mac and iPhone; show kilograms and meters to eight decimal places and meters/second to two decimal places, always with unit labels. State on screen: “Trajectory calculations arrive in the next milestone.”
 

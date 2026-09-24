@@ -6,7 +6,7 @@ This is the ordered list of outcomes for the native app. It is not an execution 
 
 | # | Outcome | State |
 |---|---|---|
-| 1 | Native math, fixture reader, and editable unit conversion preview | in progress; fixture reader complete |
+| 1 | Native math, fixture reader, and editable unit conversion preview | complete |
 | 2 | Working trajectory solver and inspection screen | later |
 | 3 | Dispersion and steel physics | later |
 | 4 | First playable shot loop | later |
