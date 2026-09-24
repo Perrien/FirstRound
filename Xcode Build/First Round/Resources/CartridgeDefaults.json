@@ -1,0 +1,174 @@
+{
+  "defaults": [
+    {
+      "id": "22lr-40-standard",
+      "cartridgeId": "22lr",
+      "name": ".22 LR \u00b7 40 gr standard",
+      "box": {
+        "bulletWeightGr": 40,
+        "diameterIn": 0.2255,
+        "lengthIn": 0.451,
+        "bc": 0.138,
+        "dragModel": "G1",
+        "muzzleVelocityFps": 1070,
+        "twistInPerTurn": 16
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 22lr-40-standard. Original note: representative 40 gr standard-velocity .22 LR (CCI SV class).",
+      "recommendedMaxRangeM": 500,
+      "recommendedStepM": 50
+    },
+    {
+      "id": "223-77-match",
+      "cartridgeId": "223",
+      "name": ".223 Rem \u00b7 77 gr match",
+      "box": {
+        "bulletWeightGr": 77,
+        "diameterIn": 0.224,
+        "lengthIn": 0.98,
+        "bc": 0.19,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2750,
+        "twistInPerTurn": 8
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 223-77-match. Original note: representative 77 gr SMK-class .223 match load.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "6cm-derived-match",
+      "cartridgeId": "6cm",
+      "name": "6mm Creedmoor \u00b7 108 gr match",
+      "box": {
+        "bulletWeightGr": 108,
+        "diameterIn": 0.243,
+        "lengthIn": 1.2097459011039258,
+        "bc": 0.22990251817113586,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2960.0054266681136,
+        "twistInPerTurn": 8
+      },
+      "provenance": "Derived from LongRange GameBuild/app/src/game/cartridges.data.json (6cm) and ballistic-derivation.ts formulas: anchor weight 108 gr; i7 midpoint 1.1364999999999998; SD = weight/(7000 \u00d7 diameter\u00b2); G7 BC = SD/i7; length = 4.63 \u00d7 SD (jacketed lead-core class); velocity = k \u00d7 weight^(\u2212a) \u00d7 (reference barrel/reference barrel)^n; reference barrel 25 in; twist = first listed option 8 in/turn. These are editable starting values.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "65cm-140-match",
+      "cartridgeId": "65cm",
+      "name": "6.5 Creedmoor \u00b7 140 gr match",
+      "box": {
+        "bulletWeightGr": 140,
+        "diameterIn": 0.264,
+        "lengthIn": 1.392,
+        "bc": 0.326,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2710,
+        "twistInPerTurn": 8
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 65cm-140-match. Original note: representative catalog values for a 140 gr 6.5 mm match load (e.g. Hornady 140 ELD Match class).",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "65prc-derived-match",
+      "cartridgeId": "65prc",
+      "name": "6.5 PRC \u00b7 147 gr match",
+      "box": {
+        "bulletWeightGr": 147,
+        "diameterIn": 0.264,
+        "lengthIn": 1.3950585399449034,
+        "bc": 0.28465615488417906,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2909.9272943766628,
+        "twistInPerTurn": 8.5
+      },
+      "provenance": "Derived from LongRange GameBuild/app/src/game/cartridges.data.json (65prc) and ballistic-derivation.ts formulas: anchor weight 147 gr; i7 midpoint 1.0585; SD = weight/(7000 \u00d7 diameter\u00b2); G7 BC = SD/i7; length = 4.63 \u00d7 SD (jacketed lead-core class); velocity = k \u00d7 weight^(\u2212a) \u00d7 (reference barrel/reference barrel)^n; reference barrel 25 in; twist = first listed option 8.5 in/turn. These are editable starting values.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "308-175-match",
+      "cartridgeId": "308",
+      "name": ".308 Win \u00b7 175 gr match",
+      "box": {
+        "bulletWeightGr": 175,
+        "diameterIn": 0.308,
+        "lengthIn": 1.24,
+        "bc": 0.243,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2600,
+        "twistInPerTurn": 10
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 308-175-match. Original note: representative 175 gr SMK-class .308 match load (M118LR class).",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "300wm-derived-match",
+      "cartridgeId": "300wm",
+      "name": ".300 Win Mag \u00b7 215 gr match",
+      "box": {
+        "bulletWeightGr": 215,
+        "diameterIn": 0.308,
+        "lengthIn": 1.4990633207238029,
+        "bc": 0.29635860460805374,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2819.982837313883,
+        "twistInPerTurn": 11
+      },
+      "provenance": "Derived from LongRange GameBuild/app/src/game/cartridges.data.json (300wm) and ballistic-derivation.ts formulas: anchor weight 215 gr; i7 midpoint 1.0925; SD = weight/(7000 \u00d7 diameter\u00b2); G7 BC = SD/i7; length = 4.63 \u00d7 SD (jacketed lead-core class); velocity = k \u00d7 weight^(\u2212a) \u00d7 (reference barrel/reference barrel)^n; reference barrel 25 in; twist = first listed option 11 in/turn. These are editable starting values.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "300prc-derived-match",
+      "cartridgeId": "300prc",
+      "name": ".300 PRC \u00b7 225 gr match",
+      "box": {
+        "bulletWeightGr": 225,
+        "diameterIn": 0.308,
+        "lengthIn": 1.5687871961063056,
+        "bc": 0.3101427257526144,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2809.9847793749586,
+        "twistInPerTurn": 9
+      },
+      "provenance": "Derived from LongRange GameBuild/app/src/game/cartridges.data.json (300prc) and ballistic-derivation.ts formulas: anchor weight 225 gr; i7 midpoint 1.0925; SD = weight/(7000 \u00d7 diameter\u00b2); G7 BC = SD/i7; length = 4.63 \u00d7 SD (jacketed lead-core class); velocity = k \u00d7 weight^(\u2212a) \u00d7 (reference barrel/reference barrel)^n; reference barrel 27 in; twist = first listed option 9 in/turn. These are editable starting values.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "338lm-300-match",
+      "cartridgeId": "338lm",
+      "name": ".338 Lapua Magnum \u00b7 300 gr match",
+      "box": {
+        "bulletWeightGr": 300,
+        "diameterIn": 0.338,
+        "lengthIn": 1.68,
+        "bc": 0.381,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2725,
+        "twistInPerTurn": 10
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 338lm-300-match. Original note: representative 300 gr SMK-class .338 LM load.",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    },
+    {
+      "id": "50bmg-661-m33",
+      "cartridgeId": "50bmg",
+      "name": ".50 BMG \u00b7 661 gr ball (M33)",
+      "box": {
+        "bulletWeightGr": 661,
+        "diameterIn": 0.51,
+        "lengthIn": 2.31,
+        "bc": 0.34,
+        "dragModel": "G7",
+        "muzzleVelocityFps": 2910,
+        "twistInPerTurn": 15
+      },
+      "provenance": "Copied exactly from Reference/Fixtures/loads.json, load 50bmg-661-m33. Original note: representative .50 Ball M33 specs; the measured-CDM anchor arrives in Increment 5 (McCoy).",
+      "recommendedMaxRangeM": 2000,
+      "recommendedStepM": 100
+    }
+  ]
+}

@@ -7,11 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A10000000000000000000001 /* loads.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* loads.json */; };
-		A10000000000000000000002 /* golden.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* golden.json */; };
+		A10000000000000000000001 /* ../Reference/Fixtures/loads.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000011 /* ../Reference/Fixtures/loads.json */; };
+		A10000000000000000000002 /* ../Reference/Fixtures/golden.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000012 /* ../Reference/Fixtures/golden.json */; };
 		A10000000000000000000003 /* FixtureReaderTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000013 /* FixtureReaderTests.swift */; };
 		A10000000000000000000004 /* MathTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000015 /* MathTests.swift */; };
 		A10000000000000000000005 /* UnitConversionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000016 /* UnitConversionTests.swift */; };
+		A10000000000000000000006 /* TrajectoryVectorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000017 /* TrajectoryVectorTests.swift */; };
+		A10000000000000000000007 /* SolverBehaviorTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000018 /* SolverBehaviorTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -26,12 +28,14 @@
 
 /* Begin PBXFileReference section */
 		000000000000000000000120 /* First Round.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "First Round.app"; sourceTree = BUILT_PRODUCTS_DIR; };
-		A10000000000000000000011 /* loads.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/loads.json; sourceTree = "<group>"; };
-		A10000000000000000000012 /* golden.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/golden.json; sourceTree = "<group>"; };
+		A10000000000000000000011 /* ../Reference/Fixtures/loads.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/loads.json; sourceTree = "<group>"; };
+		A10000000000000000000012 /* ../Reference/Fixtures/golden.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/golden.json; sourceTree = "<group>"; };
 		A10000000000000000000013 /* FixtureReaderTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureReaderTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000014 /* First RoundTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "First RoundTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		A10000000000000000000015 /* MathTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MathTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000016 /* UnitConversionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UnitConversionTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000017 /* TrajectoryVectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrajectoryVectorTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000018 /* SolverBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolverBehaviorTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -61,8 +65,8 @@
 			children = (
 				000000000000000000000010 /* First Round */,
 				A10000000000000000000020 /* First RoundTests */,
-				A10000000000000000000011 /* loads.json */,
-				A10000000000000000000012 /* golden.json */,
+				A10000000000000000000011 /* ../Reference/Fixtures/loads.json */,
+				A10000000000000000000012 /* ../Reference/Fixtures/golden.json */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -82,6 +86,8 @@
 				A10000000000000000000013 /* FixtureReaderTests.swift */,
 				A10000000000000000000015 /* MathTests.swift */,
 				A10000000000000000000016 /* UnitConversionTests.swift */,
+				A10000000000000000000017 /* TrajectoryVectorTests.swift */,
+				A10000000000000000000018 /* SolverBehaviorTests.swift */,
 			);
 			path = "First RoundTests";
 			sourceTree = "<group>";
@@ -118,8 +124,7 @@
 			buildRules = (
 			);
 			dependencies = (
-		/* Begin PBXTargetDependency section */
-		A10000000000000000000051 /* PBXTargetDependency */,
+				A10000000000000000000051 /* PBXTargetDependency */,
 			);
 			name = "First RoundTests";
 			productName = "First RoundTests";
@@ -174,8 +179,8 @@
 		A10000000000000000000033 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			files = (
-				A10000000000000000000001 /* loads.json in Resources */,
-				A10000000000000000000002 /* golden.json in Resources */,
+				A10000000000000000000001 /* ../Reference/Fixtures/loads.json in Resources */,
+				A10000000000000000000002 /* ../Reference/Fixtures/golden.json in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -192,9 +197,19 @@
 				A10000000000000000000003 /* FixtureReaderTests.swift in Sources */,
 				A10000000000000000000004 /* MathTests.swift in Sources */,
 				A10000000000000000000005 /* UnitConversionTests.swift in Sources */,
+				A10000000000000000000006 /* TrajectoryVectorTests.swift in Sources */,
+				A10000000000000000000007 /* SolverBehaviorTests.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		A10000000000000000000051 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 000000000000000100000000 /* First Round */;
+			targetProxy = A10000000000000000000050 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		000000000000000011000000 /* Debug configuration for PBXProject "First Round" */ = {
@@ -475,18 +490,12 @@
 		A10000000000000000000042 /* Build configuration list for PBXNativeTarget "First RoundTests" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A10000000000000000000040 /* Debug */,
-				A10000000000000000000041 /* Release */,
+				A10000000000000000000040 /* Debug configuration for PBXNativeTarget "First RoundTests" */,
+				A10000000000000000000041 /* Release configuration for PBXNativeTarget "First RoundTests" */,
 			);
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
-		A10000000000000000000051 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 000000000000000100000000 /* First Round */;
-			targetProxy = A10000000000000000000050 /* PBXContainerItemProxy */;
-		};
-/* End PBXTargetDependency section */
 	};
 	rootObject = 000000000000000000000000 /* Project object */;
 }
