@@ -63,6 +63,24 @@ struct TrajectorySolver {
         return TrajectorySolution(rows: rows, zero: zero.result)
     }
 
+    /// Reuses this solver's validated launch model for a cached target-range zero.
+    /// Group sampling creates a request whose zero range is its selected target
+    /// range, then keeps this exact launch state for every shot.
+    func calmAirZeroedLaunchState() throws -> BulletState {
+        try findZero(wind: Vector3D()).initialState
+    }
+
+    /// Flies an already prepared launch state without recalculating its zero.
+    /// The caller supplies per-shot wind variance; deterministic mean wind and
+    /// the owner's computed center remain outside this scatter calculation.
+    func impact(initial: BulletState, at rangeM: Float) throws -> TrajectoryPoint {
+        guard rangeM.isFinite, rangeM > 0 else { throw SolverError.invalidInput("target range") }
+        let trajectory = try simulate(initial: initial, meanWind: request.wind.vector,
+                                      maxDistanceM: rangeM * 1.05, applyField: false)
+        guard let impact = trajectory.atDistance(rangeM) else { throw SolverError.requestedRangeUnreachable(rangeM) }
+        return impact
+    }
+
     private struct ZeroSearchResult {
         var initialState: BulletState
         var result: ZeroResult

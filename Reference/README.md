@@ -33,3 +33,24 @@ The helper uses the built single-file WebAssembly artifact, not Swift. It seeds 
 | `Fixtures/web-shot.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `f57b7a68b07e90799e84c061ad51add7a20574afd50f69550ec61e10199856eb` |
 
 The engine uses `std::mt19937` plus Emscripten 6.0.9 libc++ distributions. Swift ports the same MT19937 sequence, forward `std::shuffle` order, bounded-integer low-bit mask/rejection draws, and `generate_canonical<float>` conversion. `WindReferenceTests` checks captured samples and rows with the fixtures bundled only in the test target.
+
+## Shot-group references
+
+`Fixtures/shot-group.json` captures three 50-shot groups from the owned LongRange engine at revision `a96c8f67ed2f395d111b1da5613f151823f7742c`: the 6.5 Creedmoor 140 gr match dispersion case, a higher-dispersion case, and a case with independent crosswind, headwind, and updraft variance. The fixture includes ordered per-shot impact offsets, sampled muzzle velocity and BC, release/cant/wind draws, the group center, and the old engine's RMS-from-aim and bounding-box-diagonal values under explicit definitions. Its SHA-256 is over the canonical JSON payload before the `sha256` field is added.
+
+| File | Source revision | Canonical payload SHA-256 | File SHA-256 |
+|---|---|---|---|
+| `Fixtures/shot-group.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `a3b5e53cda12f47ed97bc080d0d3e863e55683b382d981cf69740eeafcc1d3e4` | `9a88b6c1ecbeaac79cbdf5523d643539552761c655da39ee1be09b3de2814694` |
+
+| File | Source revision | Canonical payload SHA-256 | File SHA-256 |
+|---|---|---|---|
+| `Fixtures/shot-group.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `a3b5e53cda12f47ed97bc080d0d3e863e55683b382d981cf69740eeafcc1d3e4` | `9a88b6c1ecbeaac79cbdf5523d643539552761c655da39ee1be09b3de2814694` |
+
+Regenerate offline from the First Round repository root when the LongRange checkout has the pinned WASM artifact:
+
+```sh
+node Reference/generate-shot-group-references.mjs "/Users/perrien/Developer/LongRange"
+shasum -a 256 Reference/Fixtures/shot-group.json
+```
+
+The generator is a development tool only. Xcode bundles this JSON only with the test target; the app screen always computes its group from current editable inputs.

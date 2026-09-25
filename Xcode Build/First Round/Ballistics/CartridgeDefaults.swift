@@ -11,10 +11,22 @@ struct CartridgeDefault: Codable, Identifiable {
         var twistInPerTurn: Double
     }
 
+    struct DispersionValues: Codable {
+        var muzzleVelocitySDMps: Double
+        var bcSDPercent: Double
+        var rifleConeMOADiameter: Double
+        var cantLimitDegrees: Double
+        var crosswindSDMps: Double
+        var headwindSDMps: Double
+        var updraftSDMps: Double
+        var sourceLabel: String
+    }
+
     var id: String
     var cartridgeId: String
     var name: String
     var box: BoxValues
+    var dispersion: DispersionValues
     var provenance: String
     var recommendedMaxRangeM: Double
     var recommendedStepM: Double

@@ -33,6 +33,23 @@ struct SeededRandom {
         return (upper - lower) * unit + lower
     }
 
+    /// One libc++ `std::normal_distribution<float>` draw. The old engine creates
+    /// a fresh distribution for each call, so its normally cached second variate
+    /// is discarded after each sample. Keep the rejection loop and Float
+    /// intermediates to match the pinned Emscripten libc++ implementation.
+    mutating func normal(mean: Float, standardDeviation: Float) -> Float {
+        var u: Float
+        var v: Float
+        var radiusSquared: Float
+        repeat {
+            u = uniform(-1, 1)
+            v = uniform(-1, 1)
+            radiusSquared = u * u + v * v
+        } while radiusSquared > 1 || radiusSquared == 0
+        let scale = sqrt(-2 * log(radiusSquared) / radiusSquared)
+        return (u * scale) * standardDeviation + mean
+    }
+
     mutating func shuffle(_ values: inout [Int]) {
         guard values.count > 1 else { return }
         // libc++ std::shuffle walks forward, selecting each swap offset with

@@ -44,6 +44,7 @@ struct ContentView: View {
     }
 
     var body: some View {
+        TabView {
         NavigationStack {
             Form {
                 Section {
@@ -163,6 +164,12 @@ struct ContentView: View {
             .onChange(of: selectedDefaultID) { _, newValue in applyDefault(id: newValue) }
             .onChange(of: distanceSystem) { oldValue, newValue in convertDisplayInputs(from: oldValue, to: newValue) }
             .onChange(of: calculationSignature) { _, _ in invalidateResult() }
+        }
+        .tabItem { Label("Trajectory", systemImage: "scope") }
+        ShotGroupView(contextProvider: shotGroupContext,
+                      startingValues: defaults.first(where: { $0.id == selectedDefaultID })?.dispersion,
+                      distanceSystem: distanceSystem, inputSignature: calculationSignature)
+            .tabItem { Label("Shot Group", systemImage: "circle.dotted") }
         }
     }
 
@@ -417,6 +424,66 @@ struct ContentView: View {
         } catch {
             calculationError = error.localizedDescription
         }
+    }
+
+    private func shotGroupContext(_ targetRangeM: Float) throws -> ShotGroupContext {
+        validationErrors.removeAll()
+        let weight = parse(bulletWeight, key: "weight", label: "weight")
+        let diameter = parse(bulletDiameter, key: "diameter", label: "diameter")
+        let length = parse(bulletLength, key: "length", label: "length")
+        let bc = parse(ballisticCoefficient, key: "BC", label: "ballistic coefficient")
+        let mv = parse(muzzleVelocity, key: "muzzleVelocity", label: "muzzle velocity")
+        let twistValue = parse(twist, key: "twist", label: "twist")
+        let tempDisplay = parse(temperature, key: "temperature", label: "temperature", allowsNegative: true)
+        let altitudeDisplay = parse(altitude, key: "altitude", label: "altitude", allowsNegative: true)
+        let humidityPercent = parse(humidity, key: "humidity", label: "humidity", allowsZero: true, range: 0...100)
+        let zeroDisplay = parse(zeroRange, key: "zeroRange", label: "zero distance")
+        let scopeDisplay = parse(scopeHeight, key: "scopeHeight", label: "scope height", allowsZero: true)
+        let windDisplay = parse(windSpeed, key: "windSpeed", label: "wind speed", allowsZero: true)
+        let direction = parse(windDirection, key: "windDirection", label: "wind direction", allowsZero: true, range: 0...360)
+        let seedValue = windMode == .moderate ? parse(windSeed, key: "windSeed", label: "field seed", allowsZero: true, range: 0...Double(UInt32.max)) : 1337
+        let clockValue = windMode == .moderate ? parse(windClock, key: "windClock", label: "field clock", allowsZero: true, range: 0...86_400) : 0
+        let stepDisplay = parse(rangeStep, key: "rangeStep", label: "range interval")
+        let maxDisplay = parse(maxRange, key: "maxRange", label: "maximum range")
+        guard validationErrors.isEmpty,
+              let weight, let diameter, let length, let bc, let mv, let twistValue,
+              let tempDisplay, let altitudeDisplay, let humidityPercent, let zeroDisplay, let scopeDisplay,
+              let windDisplay, let direction, let seedValue, let clockValue, let stepDisplay, let maxDisplay else {
+            throw SolverError.invalidInput("trajectory input")
+        }
+        let temperatureK = distanceSystem.temperatureKelvin(fromDisplay: tempDisplay)
+        guard temperatureK.isFinite, temperatureK > 0 else { throw SolverError.invalidInput("temperature") }
+        let groupRange = targetRangeM
+        let maxM = max(Float(distanceSystem.meters(fromRange: maxDisplay)), groupRange)
+        let zeroM = Float(distanceSystem.meters(fromRange: zeroDisplay))
+        let windMps = distanceSystem.windMetersPerSecond(fromDisplay: windDisplay)
+        let directionRadians = direction * Double.pi / 180
+        let load = BallisticLoad(massKg: Float(weight * 0.00006479891), diameterM: Float(diameter * 0.0254),
+                                 lengthM: Float(length * 0.0254), bc: Float(bc), dragModel: dragModel,
+                                 muzzleVelocityMps: Float(mv * 0.3048), twistM: Float(twistValue * 0.0254))
+        var request = BallisticRequest(load: load,
+            atmosphere: AtmosphereInput(temperatureK: Float(temperatureK),
+                altitudeM: Float(distanceSystem.altitudeMeters(fromDisplay: altitudeDisplay)),
+                humidity: Float(humidityPercent / 100), pressurePa: 0),
+            wind: ConstantWind(xMps: Float(windMps * cos(directionRadians)), yMps: 0,
+                               zMps: Float(-windMps * sin(directionRadians))),
+            ranges: RangeRequest(zeroRangeM: zeroM, maxRangeM: maxM,
+                stepM: Float(distanceSystem.meters(fromRange: stepDisplay)), requestedRangesM: [groupRange]),
+            zeroMode: .calmAir, sightHeightM: Float(distanceSystem.scopeHeightMeters(fromDisplay: scopeDisplay)))
+        request.maxTimeS = 30
+        let solution: TrajectorySolution
+        if windMode == .moderate {
+            let field = WindField(seed: UInt32(seedValue),
+                bounds: .init(minimum: Vector3D(-30, 0, -maxM), maximum: Vector3D(30, 50, 0)))
+            field.advance(to: Float(clockValue))
+            solution = try TrajectorySolver(request: request, windSampler: { position, _ in field.sample(position) }).solve()
+        } else {
+            solution = try TrajectorySolver(request: request).solve()
+        }
+        guard let row = solution.rows.first(where: { abs($0.rangeM - groupRange) < 1e-4 }) else {
+            throw SolverError.requestedRangeUnreachable(groupRange)
+        }
+        return ShotGroupContext(request: request, deterministicCenterM: Vector2D(row.windageM, row.dropM))
     }
 
     private var windSection: some View {

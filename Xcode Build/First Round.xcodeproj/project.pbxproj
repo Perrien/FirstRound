@@ -17,6 +17,9 @@
 		A10000000000000000000008 /* WindReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000019 /* WindReferenceTests.swift */; };
 		A10000000000000000000009 /* ../Reference/Fixtures/generated-wind.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000021 /* ../Reference/Fixtures/generated-wind.json */; };
 		A1000000000000000000000A /* ../Reference/Fixtures/web-shot.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000022 /* ../Reference/Fixtures/web-shot.json */; };
+		A1000000000000000000000B /* ../Reference/Fixtures/shot-group.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */; };
+		A1000000000000000000000C /* DispersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000024 /* DispersionTests.swift */; };
+		A1000000000000000000000D /* ShotGroupReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000025 /* ShotGroupReferenceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,8 +43,11 @@
 		A10000000000000000000017 /* TrajectoryVectorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrajectoryVectorTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000018 /* SolverBehaviorTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SolverBehaviorTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000019 /* WindReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindReferenceTests.swift; sourceTree = "<group>"; };
-		A10000000000000000000021 /* ../Reference/Fixtures/generated-wind.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/generated-wind.json; sourceTree = "<group>"; };
-		A10000000000000000000022 /* ../Reference/Fixtures/web-shot.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = ../Reference/Fixtures/web-shot.json; sourceTree = "<group>"; };
+		A10000000000000000000021 /* ../Reference/Fixtures/generated-wind.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "../Reference/Fixtures/generated-wind.json"; sourceTree = "<group>"; };
+		A10000000000000000000022 /* ../Reference/Fixtures/web-shot.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "../Reference/Fixtures/web-shot.json"; sourceTree = "<group>"; };
+		A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "../Reference/Fixtures/shot-group.json"; sourceTree = "<group>"; };
+		A10000000000000000000024 /* DispersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispersionTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000025 /* ShotGroupReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotGroupReferenceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -75,6 +81,7 @@
 				A10000000000000000000012 /* ../Reference/Fixtures/golden.json */,
 				A10000000000000000000021 /* ../Reference/Fixtures/generated-wind.json */,
 				A10000000000000000000022 /* ../Reference/Fixtures/web-shot.json */,
+				A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -97,6 +104,8 @@
 				A10000000000000000000017 /* TrajectoryVectorTests.swift */,
 				A10000000000000000000018 /* SolverBehaviorTests.swift */,
 				A10000000000000000000019 /* WindReferenceTests.swift */,
+				A10000000000000000000024 /* DispersionTests.swift */,
+				A10000000000000000000025 /* ShotGroupReferenceTests.swift */,
 			);
 			path = "First RoundTests";
 			sourceTree = "<group>";
@@ -192,6 +201,7 @@
 				A10000000000000000000002 /* ../Reference/Fixtures/golden.json in Resources */,
 				A10000000000000000000009 /* ../Reference/Fixtures/generated-wind.json in Resources */,
 				A1000000000000000000000A /* ../Reference/Fixtures/web-shot.json in Resources */,
+				A1000000000000000000000B /* ../Reference/Fixtures/shot-group.json in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -211,6 +221,8 @@
 				A10000000000000000000006 /* TrajectoryVectorTests.swift in Sources */,
 				A10000000000000000000007 /* SolverBehaviorTests.swift in Sources */,
 				A10000000000000000000008 /* WindReferenceTests.swift in Sources */,
+				A1000000000000000000000C /* DispersionTests.swift in Sources */,
+				A1000000000000000000000D /* ShotGroupReferenceTests.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */
