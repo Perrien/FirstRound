@@ -91,12 +91,14 @@ struct ShotGroupSimulator {
                                     muzzleVelocityMps: sampledMV, ballisticCoefficient: sampledBC,
                                     rifleAngle: Vector2D(horizontalAngle, verticalAngle), cantRadians: cant,
                                     crosswindMps: crosswind, headwindMps: headwind, updraftMps: updraft,
-                                    impactVelocityMps: impact.speedMps)
+                                    impactVelocityMps: impact.speedMps,
+                                    incomingVelocityMps: impact.state.velocity)
             samples.append(sample)
             if (index + 1).isMultiple(of: 10) || index + 1 == shotCount { progress(index + 1, shotCount) }
         }
         return ShotGroupResult.summarize(shots: samples, seed: seed, plateDiameterM: plateDiameterM,
-                                         bulletDiameterM: request.load.diameterM)
+                                         bulletDiameterM: request.load.diameterM,
+                                         bulletMassKg: request.load.massKg)
     }
 
     private func clippedNormal(mean: Float, sd: Float, using random: inout SeededRandom) -> Float {

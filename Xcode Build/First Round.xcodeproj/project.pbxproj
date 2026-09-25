@@ -20,6 +20,9 @@
 		A1000000000000000000000B /* ../Reference/Fixtures/shot-group.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */; };
 		A1000000000000000000000C /* DispersionTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000024 /* DispersionTests.swift */; };
 		A1000000000000000000000D /* ShotGroupReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000025 /* ShotGroupReferenceTests.swift */; };
+		A1000000000000000000000E /* ../Reference/Fixtures/steel-reaction.json in Resources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000026 /* ../Reference/Fixtures/steel-reaction.json */; };
+		A1000000000000000000000F /* SteelPlateTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000027 /* SteelPlateTests.swift */; };
+		A10000000000000000000010 /* SteelReferenceTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = A10000000000000000000028 /* SteelReferenceTests.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -48,6 +51,9 @@
 		A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "../Reference/Fixtures/shot-group.json"; sourceTree = "<group>"; };
 		A10000000000000000000024 /* DispersionTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DispersionTests.swift; sourceTree = "<group>"; };
 		A10000000000000000000025 /* ShotGroupReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShotGroupReferenceTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000026 /* ../Reference/Fixtures/steel-reaction.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = "../Reference/Fixtures/steel-reaction.json"; sourceTree = "<group>"; };
+		A10000000000000000000027 /* SteelPlateTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteelPlateTests.swift; sourceTree = "<group>"; };
+		A10000000000000000000028 /* SteelReferenceTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SteelReferenceTests.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -82,6 +88,7 @@
 				A10000000000000000000021 /* ../Reference/Fixtures/generated-wind.json */,
 				A10000000000000000000022 /* ../Reference/Fixtures/web-shot.json */,
 				A10000000000000000000023 /* ../Reference/Fixtures/shot-group.json */,
+				A10000000000000000000026 /* ../Reference/Fixtures/steel-reaction.json */,
 				000000000000000000000020 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -106,6 +113,8 @@
 				A10000000000000000000019 /* WindReferenceTests.swift */,
 				A10000000000000000000024 /* DispersionTests.swift */,
 				A10000000000000000000025 /* ShotGroupReferenceTests.swift */,
+				A10000000000000000000027 /* SteelPlateTests.swift */,
+				A10000000000000000000028 /* SteelReferenceTests.swift */,
 			);
 			path = "First RoundTests";
 			sourceTree = "<group>";
@@ -202,6 +211,7 @@
 				A10000000000000000000009 /* ../Reference/Fixtures/generated-wind.json in Resources */,
 				A1000000000000000000000A /* ../Reference/Fixtures/web-shot.json in Resources */,
 				A1000000000000000000000B /* ../Reference/Fixtures/shot-group.json in Resources */,
+				A1000000000000000000000E /* ../Reference/Fixtures/steel-reaction.json in Resources */,
 			);
 		};
 /* End PBXResourcesBuildPhase section */
@@ -223,6 +233,8 @@
 				A10000000000000000000008 /* WindReferenceTests.swift in Sources */,
 				A1000000000000000000000C /* DispersionTests.swift in Sources */,
 				A1000000000000000000000D /* ShotGroupReferenceTests.swift in Sources */,
+				A1000000000000000000000F /* SteelPlateTests.swift in Sources */,
+				A10000000000000000000010 /* SteelReferenceTests.swift in Sources */,
 			);
 		};
 /* End PBXSourcesBuildPhase section */

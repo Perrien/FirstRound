@@ -40,8 +40,6 @@ The engine uses `std::mt19937` plus Emscripten 6.0.9 libc++ distributions. Swift
 
 | File | Source revision | Canonical payload SHA-256 | File SHA-256 |
 |---|---|---|---|
-| `Fixtures/shot-group.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `a3b5e53cda12f47ed97bc080d0d3e863e55683b382d981cf69740eeafcc1d3e4` | `9a88b6c1ecbeaac79cbdf5523d643539552761c655da39ee1be09b3de2814694` |
-
 | File | Source revision | Canonical payload SHA-256 | File SHA-256 |
 |---|---|---|---|
 | `Fixtures/shot-group.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `a3b5e53cda12f47ed97bc080d0d3e863e55683b382d981cf69740eeafcc1d3e4` | `9a88b6c1ecbeaac79cbdf5523d643539552761c655da39ee1be09b3de2814694` |
@@ -54,3 +52,20 @@ shasum -a 256 Reference/Fixtures/shot-group.json
 ```
 
 The generator is a development tool only. Xcode bundles this JSON only with the test target; the app screen always computes its group from current editable inputs.
+
+## Hanging steel reaction
+
+`Fixtures/steel-reaction.json` captures center and opposing rim hits on a 6-inch round plate, plus hard off-center hits on 2-inch and 12-inch plates. The cases use the LongRange owned engine at revision `a96c8f67ed2f395d111b1da5613f151823f7742c`, a 140 gr 6.5 Creedmoor bullet, 700 m/s impact speed, a 12.7 mm steel plate, and the two-chain rig used by the web bridge. Each case records the impact point, incoming velocity, plate mass, center of mass, normal/quaternion, angular velocity, and moving state at 0, 0.02, 0.2, and 1 second, then at the first settled frame (40 second cap). Settling uses 1/60-second outer frames; each engine call internally substeps at no more than 1 ms.
+
+Regenerate offline from the First Round repository root when the LongRange checkout has the pinned WASM artifact:
+
+```sh
+node Reference/generate-steel-references.mjs "/Users/perrien/Developer/LongRange"
+shasum -a 256 Reference/Fixtures/steel-reaction.json
+```
+
+| File | Source revision | Canonical payload SHA-256 |
+|---|---|---|
+| `Fixtures/steel-reaction.json` | `a96c8f67ed2f395d111b1da5613f151823f7742c` | `a92aa924820d6a4a1b814547eed31e86ff2fd3cd70a2ddc284e19cd6bd2963e0` | `1f95f829bd0074e0d172ee6300d2b06700efbe927674cebbdf1f0935999cbab1` |
+
+This JSON is bundled only in the Xcode test target. Runtime plate motion is computed by the Swift steel model from the current hit, bullet, and plate inputs.

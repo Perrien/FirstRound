@@ -1,6 +1,6 @@
 # Shot group and steel physics
 
-Status: **IN PROGRESS — checkpoint 1 complete; paused at owner checkpoint** · 2026-09-25
+Status: **IN PROGRESS — checkpoint 1 complete; checkpoint 2 ready for owner review and commit** · 2026-09-25
 
 Goal: Complete ladder outcome 3. From the current editable Mac solver inputs, the owner chooses a shot count and seed, runs a fresh simulated group, sees every impact against a round steel plate, and inspects the spread and hit statistics. A separate center/edge demonstration shows the plate's physical reaction and settling. The calculations and target motion are Swift implementations, not lookups from saved results. Validate both against separate, fixed web-engine cases and independent behavior checks. This is one focused plan for outcome 3, with two commit checkpoints.
 
@@ -48,7 +48,7 @@ Plot every impact in a fixed-scale target-plane chart with a labeled plate outli
 
 **Commit point:** show the plotted group, metrics, reference comparison, and Mac test/build summary, then stop before steel. Suggested message: `Add seeded shot-group inspection`.
 
-### 2. Steel hit and reaction preview — pending
+### 2. Steel hit and reaction preview — ready for owner review · 2026-09-25
 
 Port the **round hanging plate** path needed for the next playable shot loop: circular intersection in the target plane with bullet-radius line break; a plate hit applies projectile momentum at its impact point; plate mass from steel density/area/thickness with the legacy minimum mass; rotational inertia; two top chain constraints; gravity, damping, twist spring/limit, and settle detection. Preserve the old coordinate and quaternion convention and the `1 ms` maximum internal physics substep. Use the old `steel_target.cpp` constants and chain geometry as written; keep them in named Swift constants. Centered impact should swing downrange, a right/left rim impact should add opposite signed twist, and the plate should settle facing the shooter. The intended first plate is a 6-inch (`0.1524 m`) round plate, `0.0127 m` thick, with a 140 gr 6.5 mm bullet; include small 2-inch and large 12-inch edge cases. Record hit location, incoming velocity, plate pose, and settle state. Defer impact paint/texture, rectangular silhouettes, target-specific hinges/latches, audio, and 3D rendering to later outcomes.
 
@@ -56,7 +56,7 @@ Capture deterministic old-engine cases for center and ±rim strikes on the 6-inc
 
 Add a Mac steel preview beside or below the shot plot. Selecting a plotted hit can replay its strike; buttons for a reproducible center hit and left/right edge hits make the difference observable even if the sampled group misses. Show a front view plus swing/twist-versus-time readouts or a simple animation driven by computed poses, with a Replay control and a visible “settled” state. It must use the Swift physics result. No RealityKit range or player trigger is needed here.
 
-**Check:** Mac tests and build pass, including unchanged solver/vector/wind tests. On the Mac screen, center hit swings, edge hits twist in opposite directions, a miss leaves the plate still, and all three plate sizes return toward front-facing rest. Show the reaction plus test summary to the owner. If a plate cannot settle or parity differs materially, stop with a numeric trace and source comparison; do not hide a mismatch with a visual-only effect.
+**Check:** The Mac test suite and app build pass, including unchanged solver/vector/wind tests. The five steel reference cases match the pinned engine within the position/orientation/angular-velocity tolerances. Invariant tests confirm a miss receives no impulse, a bullet-radius graze reacts, center strikes swing downrange, left/right rim strikes twist with opposite signs, and 2-, 6-, and 12-inch plates settle facing forward. On the Mac screen, the 6.5 Creedmoor 140 gr default produced a 50-shot uncorrected group centered at `(0.0067, -0.3097) m` with 0/50 hits; the separate center-hit preview reached `68.4°` swing at `0.30 s` and was returning toward rest, while left/right edge previews showed `−39.6°` and `+26.8°` twist at `0.30` and `0.33 s`. At settle, the captured 6-inch pose normal is `(0.0000, 0.1206, -0.9927)`, so the plate remains facing the shooter. The front-view chains use the old web bridge's outward-splayed display endpoints to avoid crossing visually; the underlying legacy physics anchors are unchanged for parity. Reference JSON remains test-target-only, fixture regeneration is deterministic, `git diff --check` passes, and no runtime file refers to an absolute LongRange checkout path.
 
 **Commit point:** show the steel preview and checks, then stop. Suggested message: `Port round steel reaction physics`.
 

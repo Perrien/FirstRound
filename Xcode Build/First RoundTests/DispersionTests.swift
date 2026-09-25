@@ -28,7 +28,7 @@ final class DispersionTests: XCTestCase {
             sample(1, 0, 0), sample(2, 2, 0), sample(3, 0, 2)
         ]
         let group = ShotGroupResult.summarize(shots: points, seed: 9, plateDiameterM: 2,
-                                               bulletDiameterM: 0)
+                                               bulletDiameterM: 0, bulletMassKg: 0.009)
         XCTAssertEqual(group.statistics.centerM.x, 2 / 3, accuracy: 1e-6)
         XCTAssertEqual(group.statistics.centerM.y, 2 / 3, accuracy: 1e-6)
         XCTAssertEqual(group.statistics.meanRadiusAboutGroupCenterM,
@@ -37,7 +37,7 @@ final class DispersionTests: XCTestCase {
         XCTAssertEqual(group.statistics.rmsRadiusFromAimM, sqrt(8.0 / 3.0), accuracy: 1e-6)
 
         let graze = ShotGroupResult.summarize(shots: [sample(1, 1.01, 0)], seed: 1,
-                                               plateDiameterM: 2, bulletDiameterM: 0.02)
+                                               plateDiameterM: 2, bulletDiameterM: 0.02, bulletMassKg: 0.009)
         XCTAssertEqual(graze.statistics.hitCount, 1)
     }
 
@@ -63,6 +63,6 @@ final class DispersionTests: XCTestCase {
     private func sample(_ id: Int, _ x: Float, _ y: Float) -> ShotSample {
         ShotSample(id: id, offsetM: Vector2D(x, y), muzzleVelocityMps: 800, ballisticCoefficient: 0.3,
                    rifleAngle: Vector2D(), cantRadians: 0, crosswindMps: 0, headwindMps: 0,
-                   updraftMps: 0, impactVelocityMps: 700)
+                   updraftMps: 0, impactVelocityMps: 700, incomingVelocityMps: Vector3D(0, 0, -700))
     }
 }

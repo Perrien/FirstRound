@@ -32,12 +32,14 @@ struct ShotSample: Identifiable {
     let headwindMps: Float
     let updraftMps: Float
     let impactVelocityMps: Float
+    let incomingVelocityMps: Vector3D
 
     func translated(by center: Vector2D) -> ShotSample {
         ShotSample(id: id, offsetM: offsetM + center, muzzleVelocityMps: muzzleVelocityMps,
                    ballisticCoefficient: ballisticCoefficient, rifleAngle: rifleAngle,
                    cantRadians: cantRadians, crosswindMps: crosswindMps, headwindMps: headwindMps,
-                   updraftMps: updraftMps, impactVelocityMps: impactVelocityMps)
+                   updraftMps: updraftMps, impactVelocityMps: impactVelocityMps,
+                   incomingVelocityMps: incomingVelocityMps)
     }
 }
 
@@ -53,13 +55,15 @@ struct ShotGroupResult {
     let seed: UInt32
     let plateDiameterM: Float
     let bulletDiameterM: Float
+    let bulletMassKg: Float
     let shots: [ShotSample]
     let statistics: ShotGroupStatistics
 
     static func summarize(shots: [ShotSample], seed: UInt32, plateDiameterM: Float,
-                          bulletDiameterM: Float) -> ShotGroupResult {
+                          bulletDiameterM: Float, bulletMassKg: Float) -> ShotGroupResult {
         guard !shots.isEmpty else {
             return ShotGroupResult(seed: seed, plateDiameterM: plateDiameterM, bulletDiameterM: bulletDiameterM,
+                                   bulletMassKg: bulletMassKg,
                                    shots: [], statistics: ShotGroupStatistics(centerM: Vector2D(),
                                    meanRadiusAboutGroupCenterM: 0, extremeSpreadM: 0, rmsRadiusFromAimM: 0, hitCount: 0))
         }
@@ -77,6 +81,7 @@ struct ShotGroupResult {
         let hitRadius = plateDiameterM * 0.5 + bulletDiameterM * 0.5
         let hits = shots.reduce(0) { $0 + ($1.offsetM.magnitude <= hitRadius ? 1 : 0) }
         return ShotGroupResult(seed: seed, plateDiameterM: plateDiameterM, bulletDiameterM: bulletDiameterM,
+                               bulletMassKg: bulletMassKg,
                                shots: shots, statistics: ShotGroupStatistics(centerM: center,
                                meanRadiusAboutGroupCenterM: radii.reduce(0, +) / Float(shots.count),
                                extremeSpreadM: maximumPairDistanceM, rmsRadiusFromAimM: rms, hitCount: hits))

@@ -1,4 +1,5 @@
 import SwiftUI
+import Combine
 
 struct ShotGroupContext {
     var request: BallisticRequest
@@ -129,6 +130,10 @@ struct ShotGroupView: View {
                             LabeledContent("Sampled MV / BC", value: "\(String(format: "%.3f", selected.muzzleVelocityMps)) m/s · \(String(format: "%.6f", selected.ballisticCoefficient))")
                         }
                     }
+                    Section("Hanging steel reaction") {
+                        SteelReactionPreview(result: result,
+                            selectedShot: result.shots.first(where: { $0.id == selectedShot }))
+                    }
                 }
             }
             .formStyle(.grouped)
@@ -242,8 +247,6 @@ struct ShotGroupView: View {
         context.stroke(yAxis, with: .color(.secondary.opacity(0.2)), lineWidth: 1)
         context.draw(Text("x / y (m) · plate Ø \(String(format: "%.0f", result.plateDiameterM * 1000)) mm"),
                      at: CGPoint(x: 10, y: 14), anchor: .topLeading)
-        context.draw(Text("x / y (m) · plate Ø \(String(format: "%.0f", result.plateDiameterM * 1000)) mm"),
-                     at: CGPoint(x: 10, y: 14), anchor: .topLeading)
     }
 
     private func nearestShot(in result: ShotGroupResult, point: CGPoint, size: CGSize) -> Int? {
@@ -257,4 +260,173 @@ struct ShotGroupView: View {
     private func distance(_ a: CGPoint, _ b: CGPoint) -> CGFloat { hypot(a.x - b.x, a.y - b.y) }
     private func m(_ value: Float) -> String { String(format: "%.4f m", value) }
     private func percent(_ hits: Int, _ count: Int) -> String { String(format: "%.1f", 100 * Double(hits) / Double(count)) }
+}
+
+private struct SteelReactionPreview: View {
+    let result: ShotGroupResult
+    let selectedShot: ShotSample?
+
+    // The legacy web bridge drew outward-splayed beam endpoints to avoid
+    // showing its inward-offset physics anchors crossed in the front view.
+    private let chainDisplaySplayFraction: Float = 0.5
+
+    @State private var frames: [SteelPlate.Pose] = []
+    @State private var frameIndex = 0
+    @State private var isPreparing = false
+    @State private var isPlaying = false
+    @State private var error: String?
+
+    private let ticker = Timer.publish(every: 1 / 60, on: .main, in: .common).autoconnect()
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Button("Center hit") { replay(offset: Vector2D(), velocity: representativeVelocity) }
+                Button("Left edge hit") { replay(offset: Vector2D(-0.45 * result.plateDiameterM, 0), velocity: representativeVelocity) }
+                Button("Right edge hit") { replay(offset: Vector2D(0.45 * result.plateDiameterM, 0), velocity: representativeVelocity) }
+            }
+            .disabled(isPreparing)
+            HStack {
+                Button("Replay selected hit") {
+                    guard let selectedShot else { return }
+                    replay(offset: selectedShot.offsetM, velocity: selectedShot.incomingVelocityMps)
+                }
+                .disabled(isPreparing || selectedShot.map { !isHit($0.offsetM) } ?? true)
+                if isPreparing { ProgressView("Calculating reaction…") }
+            }
+            if let error { Text(error).foregroundStyle(.red) }
+            if let pose = frames.indices.contains(frameIndex) ? frames[frameIndex] : nil {
+                Canvas { context, size in drawPlate(pose, in: &context, size: size) }
+                    .frame(height: 220)
+                    .background(Color.secondary.opacity(0.08), in: RoundedRectangle(cornerRadius: 8))
+                HStack {
+                    LabeledContent("Swing", value: degrees(pose.swingRadians))
+                    LabeledContent("Twist", value: degrees(pose.twistRadians))
+                    LabeledContent("Angular speed", value: String(format: "%.2f rad/s", pose.angularVelocityRadPerSecond.magnitude))
+                    Text(pose.isMoving ? "Moving" : "Settled")
+                        .fontWeight(.semibold).foregroundStyle(pose.isMoving ? .orange : .green)
+                }
+                Text("Time \(String(format: "%.2f", Double(frameIndex) / 60)) s · position x/y/z \(String(format: "%.3f / %.3f / %.3f m", pose.centerOfMassM.x, pose.centerOfMassM.y, pose.centerOfMassM.z))")
+                    .font(.caption.monospacedDigit()).foregroundStyle(.secondary)
+            } else if let selectedShot, !isHit(selectedShot.offsetM) {
+                Text("Selected shot misses the plate; choose a hit to replay its reaction.")
+                    .font(.caption).foregroundStyle(.secondary)
+            } else {
+                Text("Choose a center or edge strike, or select a hit in the group to calculate its plate reaction.")
+                    .font(.caption).foregroundStyle(.secondary)
+            }
+        }
+        .buttonStyle(.bordered)
+        .onReceive(ticker) { _ in
+            guard isPlaying else { return }
+            if frameIndex + 1 >= frames.count {
+                isPlaying = false
+            } else {
+                frameIndex += 1
+                if !frames[frameIndex].isMoving { isPlaying = false }
+            }
+        }
+    }
+
+    private var representativeVelocity: Vector3D {
+        let speed = result.shots.first?.impactVelocityMps ?? 700
+        return Vector3D(0, 0, -speed)
+    }
+
+    private func isHit(_ offset: Vector2D) -> Bool {
+        let limit = result.plateDiameterM * 0.5 + result.bulletDiameterM * 0.5
+        return offset.x * offset.x + offset.y * offset.y <= limit * limit
+    }
+
+    private func replay(offset: Vector2D, velocity: Vector3D) {
+        isPreparing = true
+        isPlaying = false
+        error = nil
+        frames = []
+        let diameter = result.plateDiameterM
+        let thickness = Float(0.0127)
+        let center = Vector3D(0, 2, -100)
+        let impact = Vector3D(offset.x, center.y + offset.y, center.z)
+        let mass = result.bulletMassKg
+        let bulletRadius = result.bulletDiameterM * 0.5
+
+        DispatchQueue.global(qos: .userInitiated).async {
+            do {
+                var plate = try SteelPlate(diameterM: diameter, thicknessM: thickness, centerOfMassM: center)
+                let hit = plate.intersectSegment(from: impact + Vector3D(0, 0, 0.1),
+                                                 to: impact - Vector3D(0, 0, 0.1),
+                                                 bulletRadiusM: bulletRadius)
+                guard let hit else { throw SolverError.invalidInput("selected impact does not intersect the plate") }
+                plate.strike(at: hit.pointM, incomingVelocityMps: velocity, bulletMassKg: mass)
+                var captured = [plate.pose]
+                for _ in 0..<(40 * 60) {
+                    if !plate.isMoving { break }
+                    plate.step(1 / 60)
+                    captured.append(plate.pose)
+                }
+                DispatchQueue.main.async {
+                    self.frames = captured
+                    self.frameIndex = 0
+                    self.isPreparing = false
+                    self.isPlaying = captured.count > 1
+                }
+            } catch {
+                DispatchQueue.main.async {
+                    self.error = error.localizedDescription
+                    self.isPreparing = false
+                }
+            }
+        }
+    }
+
+    private func drawPlate(_ pose: SteelPlate.Pose, in context: inout GraphicsContext, size: CGSize) {
+        let diameter = CGFloat(result.plateDiameterM)
+        let radius = diameter * 0.5
+        let half = size.width * 0.5
+        let rigHeight = diameter + CGFloat(SteelPlate.chainLengthM) + 0.15
+        let scale = min(size.width / (diameter * 2.4), size.height / rigHeight)
+        let origin = CGPoint(x: half, y: size.height * 0.78)
+        func project(_ point: Vector3D) -> CGPoint {
+            CGPoint(x: origin.x + CGFloat(point.x) * scale,
+                    y: origin.y - CGFloat(point.y - 2) * scale)
+        }
+
+        let attachX = Float(radius) * sin(SteelPlate.chainAnchorAngleRadians)
+        let attachY = Float(radius) * cos(SteelPlate.chainAnchorAngleRadians)
+        let beamHeight = 2 + attachY + SteelPlate.chainLengthM
+        var beam = Path()
+        beam.move(to: CGPoint(x: origin.x - CGFloat(diameter) * scale, y: origin.y - CGFloat(beamHeight - 2) * scale))
+        beam.addLine(to: CGPoint(x: origin.x + CGFloat(diameter) * scale, y: origin.y - CGFloat(beamHeight - 2) * scale))
+        context.stroke(beam, with: .color(.secondary), lineWidth: 4)
+
+        for side: Float in [-1, 1] {
+            let localAttach = Vector3D(side * attachX, attachY, -0.0127 * 0.5)
+            let worldAttach = pose.centerOfMassM + pose.orientation.rotate(localAttach)
+            let fixed = Vector3D(side * attachX * (1 + chainDisplaySplayFraction), beamHeight, -100)
+            var chain = Path()
+            chain.move(to: project(worldAttach))
+            chain.addLine(to: project(fixed))
+            context.stroke(chain, with: .color(.secondary), lineWidth: 1.5)
+        }
+
+        let points = (0..<64).map { index -> CGPoint in
+            let angle = 2 * Float.pi * Float(index) / 64
+            let edge = Vector3D(Float(radius) * cos(angle), Float(radius) * sin(angle), 0)
+            return project(pose.centerOfMassM + pose.orientation.rotate(edge))
+        }
+        var platePath = Path()
+        if let first = points.first {
+            platePath.move(to: first)
+            for point in points.dropFirst() { platePath.addLine(to: point) }
+            platePath.closeSubpath()
+        }
+        context.fill(platePath, with: .color(.gray.opacity(0.72)))
+        context.stroke(platePath, with: .color(.primary), lineWidth: 2)
+        context.draw(Text("Front view · Ø \(String(format: "%.0f", Double(diameter * 1000))) mm · 12.7 mm thick · two-chain rig"),
+                     at: CGPoint(x: 10, y: 10), anchor: .topLeading)
+    }
+
+    private func degrees(_ radians: Float) -> String {
+        String(format: "%.1f°", radians * 180 / .pi)
+    }
 }
